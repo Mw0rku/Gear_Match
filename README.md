@@ -1,11 +1,1 @@
-
-  # GearMatch
-
-  This is a code bundle for GearMatch. The original project is available at https://www.figma.com/design/uxN03OApct2PUy3LaL1sLE/GearMatch.
-
-  ## Running the code
-
-  Run `npm i` to install the dependencies.
-
-  Run `npm run dev` to start the development server.
-  
+GearMatch helps athletes or anyone interested in sports find equipment that best fits their needs. By answering a series of AI generated prompts, users receive tailored recommendations designed to match their goal and preferences.
