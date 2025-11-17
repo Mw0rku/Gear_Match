@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GearMatch - Interactive Wireframes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .wireframe-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .wireframe-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        
+        .wireframe-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .wireframe-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .wireframe-description {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 16px;
+        }
+        
+        .view-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            width: 100%;
+        }
+        
+        .view-button:hover {
+            opacity: 0.9;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 24px 32px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.8em;
+        }
+        
+        .close-button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .close-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .modal-body {
+            padding: 32px;
+        }
+        
+        .wireframe-display {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        .info-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+        }
+        
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .info-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .nav-button {
+            flex: 1;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        .nav-button:hover {
+            background: #5568d3;
+        }
+        
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                max-height: 95vh;
+            }
+            
+            .wireframe-display {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚙️ GearMatch Wireframes</h1>
+            <p class="subtitle">Interactive wireframe documentation for the GearMatch mobile app - Click any card to view detailed wireframe</p>
+        </header>
+        
+        <div class="grid" id="wireframe-grid"></div>
+    </div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="close-button" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wireframe-display" id="wireframe-display"></div>
+                <div id="wireframe-info"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-button" id="prev-button" onclick="navigateWireframe(-1)">← Previous</button>
+                    <button class="nav-button" id="next-button" onclick="navigateWireframe(1)">Next →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const wireframes = [
+            {
+                id: 1,
+                name: "Login Page",
+                description: "Entry point for users - email/password authentication",
+                ascii: `┌─────────────────────────────┐
+│                             │
+│      [GearMatch Logo]       │
+│      [Gear Icon - ⚙️]       │
+│                             │
+│       "GearMatch"           │
+│                             │
+│   Find Your Perfect Gear    │
+│                             │
+│                             │
+│   ┌─────────────────────┐   │
+│   │ Email              │   │
+│   └─────────────────────┘   │
+│                             │
+│   ┌─────────────────────┐   │
+│   │ Password           │   │
+│   └─────────────────────┘   │
+│                             │
+│   ┌─────────────────────┐   │
+│   │     Login           │   │
+│   └─────────────────────┘   │
+│                             │
+│   ┌─────────────────────┐   │
+│   │   Create Account    │   │
+│   └─────────────────────┘   │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Email/password login", "Create account link", "GearMatch branding with gear icon"],
+                    navigation: "Login → Welcome Page or Create Account → Account Setup"
+                }
+            },
+            {
+                id: 2,
+                name: "Welcome Page",
+                description: "First screen after login - introduces AI features",
+                ascii: `┌─────────────────────────────┐
+│                             │
+│      [GearMatch Logo]       │
+│      [Gear Icon - ⚙️]       │
+│                             │
+│       "GearMatch"           │
+│                             │
+│  Get AI-powered             │
+│  recommendations for the    │
+│  perfect sports equipment   │
+│  based on your needs        │
+│                             │
+│   ┌─────────────────────┐   │
+│   │ AI-Generated        │   │
+│   │ Prompts             │   │
+│   └─────────────────────┘   │
+│                             │
+│   ┌─────────────────────┐   │
+│   │ Personalized        │   │
+│   │ Recommendations     │   │
+│   └─────────────────────┘   │
+│                             │
+│   ┌─────────────────────┐   │
+│   │   Get Started       │   │
+│   └─────────────────────┘   │
+│                             │
+│ ┌───┬───┬───┬───┬───┐       │
+│ │🏠 │🔍 │📋 │👤 │···│       │
+│ └───┴───┴───┴───┴───┘       │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Quick access to AI features", "Get Started CTA", "Bottom navigation bar"],
+                    navigation: "Bottom nav: Home | Search | Saved | Profile | More"
+                }
+            },
+            {
+                id: 3,
+                name: "Main Input/Search Page",
+                description: "Core search interface with AI assistant",
+                ascii: `┌─────────────────────────────┐
+│                             │
+│  ┌─────────────────────┐    │
+│  │ ✨ AI Assistant     │    │
+│  │ Tell us what you    │    │
+│  │ need                │    │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ 👤 Your Profile     │    │
+│  │ Athlete - Beginner  │    │
+│  └─────────────────────┘    │
+│                             │
+│  🔍 Describe Your Needs     │
+│  ┌─────────────────────┐    │
+│  │ e.g., I'm a         │    │
+│  │ beginner looking    │    │
+│  │ for running shoes   │    │
+│  │                     │    │
+│  └─────────────────────┘    │
+│                             │
+│           or                │
+│                             │
+│  ⌄ Choose a Prompt          │
+│  ┌─────────────────────┐    │
+│  │ Select question...  │    │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ Get Recommendations │    │
+│  └─────────────────────┘    │
+│                             │
+│ ┌───┬───┬───┬───┬───┐       │
+│ │🏠 │🔍 │📋 │👤 │···│       │
+│ └───┴───┴───┴───┴───┘       │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Free-text search input", "Pre-defined prompt selector", "User profile display", "AI assistant branding"],
+                    navigation: "Get Recommendations → Results Page"
+                }
+            },
+            {
+                id: 4,
+                name: "Results/Search Results",
+                description: "Product listings with filter/sort capabilities",
+                ascii: `┌─────────────────────────────┐
+│ ← Search Results            │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 🔍 [Search Bar]     │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ [Filter] [Sort]     │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 1. Nike Air Zoom    │     │
+│ │    Running Shoes    │     │
+│ │    $139.99      ♡   │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 2. Adidas Ultra     │     │
+│ │    Boost            │     │
+│ │    $180.00      ♡   │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 3. New Balance      │     │
+│ │    Fresh Foam       │     │
+│ │    $129.99      ♡   │     │
+│ └─────────────────────┘     │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Scrollable product list", "Save/like functionality (♡)", "Filter and sort options", "Price display"],
+                    navigation: "Back arrow returns to search, Click product for details"
+                }
+            },
+            {
+                id: 5,
+                name: "AI-Generated Prompts",
+                description: "Smart search suggestions based on saved items",
+                ascii: `┌─────────────────────────────┐
+│ ← AI Prompts                │
+│   Smart search suggestions  │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ ⚡ AI Analysis      │     │
+│ │ Complete            │     │
+│ │ Based on 5 saved    │     │
+│ │ items, 20 prompts   │     │
+│ └─────────────────────┘     │
+│                             │
+│ 🏃 Complete Your Running    │
+│ ┌─────────────────────┐     │
+│ │ ✨ I need moisture- │  → │
+│ │ wicking running...  │     │
+│ └─────────────────────┘     │
+│ ┌─────────────────────┐     │
+│ │ ✨ Looking for GPS  │  → │
+│ │ running watch...    │     │
+│ └─────────────────────┘     │
+│                             │
+│ ⚽ Enhance Your Soccer Game │
+│ ┌─────────────────────┐     │
+│ │ ✨ I want keeper    │  → │
+│ │ gloves with grip... │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ Create Custom Search│     │
+│ └─────────────────────┘     │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["AI-generated search prompts", "Categorized by sport", "Analysis status indicator", "Custom search option"],
+                    navigation: "Click prompt → Pre-fills search → Results"
+                }
+            },
+            {
+                id: 6,
+                name: "Personalized Recommendations",
+                description: "AI-curated product suggestions with match scores",
+                ascii: `┌─────────────────────────────┐
+│ ← For You                   │
+│   Based on your saved items │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ ✨ AI Insights      │     │
+│ │ Analyzed 5 saved    │     │
+│ │ items, found 6      │     │
+│ │ perfect matches     │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 📈 95% Match    ♡   │     │
+│ │ Nike Dri-FIT Shirt  │     │
+│ │ Running Apparel     │     │
+│ │ Based on Running... │     │
+│ │         $34.99      │     │
+│ │ ┌─────────────────┐ │     │
+│ │ │ 💬 Write Review │ │     │
+│ │ └─────────────────┘ │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 📈 92% Match    ♡   │     │
+│ │ Garmin Forerunner   │     │
+│ │ Running Watch       │     │
+│ │ Track your runs     │     │
+│ │        $199.99      │     │
+│ │ ┌─────────────────┐ │     │
+│ │ │ 💬 Write Review │ │     │
+│ │ └─────────────────┘ │     │
+│ └─────────────────────┘     │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Match percentage scores", "AI-generated explanations", "Review functionality", "Save/like options"],
+                    navigation: "Write Review → Review Page"
+                }
+            },
+            {
+                id: 7,
+                name: "Write Review Page",
+                description: "User review submission interface",
+                ascii: `┌─────────────────────────────┐
+│ ← Write a Review            │
+│   Share your experience     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ Nike Dri-FIT Shirt  │     │
+│ │ Running Apparel     │     │
+│ │ $34.99              │     │
+│ └─────────────────────┘     │
+│                             │
+│ Your Rating                 │
+│      ⭐ ⭐ ⭐ ⭐ ⭐          │
+│       Tap to rate           │
+│                             │
+│                             │
+│ Your Review                 │
+│ ┌─────────────────────┐     │
+│ │ Tell us about your  │     │
+│ │ experience with     │     │
+│ │ this product...     │     │
+│ │                     │     │
+│ │                     │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 📤 Submit Review    │     │
+│ └─────────────────────┘     │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Star rating (1-5)", "Text review field", "Product context display", "Submit functionality"],
+                    navigation: "Submit → Back to recommendations"
+                }
+            },
+            {
+                id: 8,
+                name: "Menu Page",
+                description: "User profile menu with navigation options",
+                ascii: `┌─────────────────────────────┐
+│                             │
+│      [Profile Avatar]       │
+│                             │
+│      Sarah Johnson          │
+│   sarah.j@email.com         │
+│                             │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ 👤 Personal Info    │ →  │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ ⚙️ Account Setup    │ →  │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ ❤️ Saved Items      │ →  │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ ⭐ Preferences      │ →  │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ ⚙️ Settings         │ →  │
+│  └─────────────────────┘    │
+│                             │
+│  ┌─────────────────────┐    │
+│  │ 🚪 Logout           │    │
+│  └─────────────────────┘    │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Profile display", "Navigation to all profile sections", "Logout functionality"],
+                    navigation: "Accessed via Profile icon in bottom nav"
+                }
+            },
+            {
+                id: 9,
+                name: "Personal Info Page",
+                description: "Read-only user information display",
+                ascii: `┌─────────────────────────────┐
+│ ← Personal Information      │
+│                             │
+│                             │
+│ Email Address               │
+│ ┌─────────────────────┐     │
+│ │ sarah.j@email.com   │     │
+│ └─────────────────────┘     │
+│                             │
+│ Full Name                   │
+│ ┌─────────────────────┐     │
+│ │ Sarah Johnson       │     │
+│ └─────────────────────┘     │
+│                             │
+│ Phone Number                │
+│ ┌─────────────────────┐     │
+│ │ +1 (555) 123-4567   │     │
+│ └─────────────────────┘     │
+│                             │
+│ Member Since                │
+│ ┌─────────────────────┐     │
+│ │ January 2024        │     │
+│ └─────────────────────┘     │
+│                             │
+│                             │
+│   (Read-only display)       │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Display-only fields", "Email, name, phone, member date", "No edit functionality"],
+                    navigation: "Back arrow returns to Menu"
+                }
+            },
+            {
+                id: 10,
+                name: "Account Setup Page",
+                description: "New account creation form",
+                ascii: `┌─────────────────────────────┐
+│ ← Account Setup             │
+│                             │
+│                             │
+│ Email                       │
+│ ┌─────────────────────┐     │
+│ │ your.email@...      │     │
+│ └─────────────────────┘     │
+│                             │
+│ Full Name                   │
+│ ┌─────────────────────┐     │
+│ │ Your Name           │     │
+│ └─────────────────────┘     │
+│                             │
+│ Password                    │
+│ ┌─────────────────────┐     │
+│ │ ••••••••            │     │
+│ └─────────────────────┘     │
+│                             │
+│ Confirm Password            │
+│ ┌─────────────────────┐     │
+│ │ ••••••••            │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │   Create Account    │     │
+│ └─────────────────────┘     │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Email input", "Name input", "Password with confirmation", "Account creation"],
+                    navigation: "Create Account → Welcome Page"
+                }
+            },
+            {
+                id: 11,
+                name: "Saved Items Page",
+                description: "Collection of user's saved/liked products",
+                ascii: `┌─────────────────────────────┐
+│ ← Saved Items               │
+│                             │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 1. Nike Air Zoom    │     │
+│ │    Pegasus 40       │     │
+│ │    Running Shoes    │     │
+│ │    $139.99      ❤️  │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 2. Adidas Tiro      │     │
+│ │    League Ball      │     │
+│ │    Soccer Equipment │     │
+│ │    $24.99       ❤️  │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 3. Under Armour     │     │
+│ │    Training Gloves  │     │
+│ │    Gym Equipment    │     │
+│ │    $29.99       ❤️  │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ 4. Wilson Evolution │     │
+│ │    Basketball       │     │
+│ │    Basketball       │     │
+│ │    $64.99       ❤️  │     │
+│ └─────────────────────┘     │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["List of saved products", "Unlike/remove option", "Price display", "Category labels"],
+                    navigation: "Click item for details, Click heart to remove"
+                }
+            },
+            {
+                id: 12,
+                name: "Preferences Page",
+                description: "Editable user preferences and physical stats",
+                ascii: `┌─────────────────────────────┐
+│ ← Preferences               │
+│   Customize your profile    │
+│                             │
+│ Sport Interests             │
+│ ┌─────────────────────┐     │
+│ │ ☑ Running           │     │
+│ │ ☑ Soccer            │     │
+│ │ ☑ Basketball        │     │
+│ │ ☑ Gym/Fitness       │     │
+│ │ ☐ Swimming          │     │
+│ │ ☐ Cycling           │     │
+│ └─────────────────────┘     │
+│                             │
+│ Physical Stats              │
+│ Weight (lbs)                │
+│ ┌─────────────────────┐     │
+│ │ 150                 │     │
+│ └─────────────────────┘     │
+│ Height (in)                 │
+│ ┌─────────────────────┐     │
+│ │ 68                  │     │
+│ └─────────────────────┘     │
+│ Age                         │
+│ ┌─────────────────────┐     │
+│ │ 28                  │     │
+│ └─────────────────────┘     │
+│ Gender                      │
+│ ┌─────────────────────┐     │
+│ │ Female              │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ Save Preferences    │     │
+│ └─────────────────────┘     │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Multi-select sport interests", "Physical stats (weight, height, age, gender)", "Save functionality", "Editable fields"],
+                    navigation: "Save → Returns to Menu"
+                }
+            },
+            {
+                id: 13,
+                name: "Settings Page",
+                description: "App settings and preferences",
+                ascii: `┌─────────────────────────────┐
+│ ← Settings                  │
+│                             │
+│                             │
+│ Appearance                  │
+│ ┌─────────────────────┐     │
+│ │ 🌙 Dark Mode    [○] │     │
+│ └─────────────────────┘     │
+│                             │
+│ Notifications               │
+│ ┌─────────────────────┐     │
+│ │ Push Notifications  │     │
+│ │              [●]    │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ Email Updates       │     │
+│ │              [●]    │     │
+│ └─────────────────────┘     │
+│                             │
+│ Privacy                     │
+│ ┌─────────────────────┐     │
+│ │ Share Data      [○] │     │
+│ └─────────────────────┘     │
+│                             │
+│ About                       │
+│ ┌─────────────────────┐     │
+│ │ Version 1.0.0       │     │
+│ └─────────────────────┘     │
+│                             │
+│ ┌─────────────────────┐     │
+│ │ Terms of Service    │  →  │
+│ └─────────────────────┘     │
+│                             │
+└─────────────────────────────┘`,
+                info: {
+                    features: ["Dark mode toggle", "Notification settings", "Privacy controls", "Version info", "Terms of service link"],
+                    navigation: "Toggles change immediately, Back to Menu"
+                }
+            }
+        ];
+
+        let currentWireframeId = null;
+
+        function renderGrid() {
+            const grid = document.getElementById('wireframe-grid');
+            grid.innerHTML = wireframes.map(wireframe => `
+                <div class="wireframe-card" onclick="openModal(${wireframe.id})">
+                    <div class="wireframe-number">${wireframe.id}</div>
+                    <h3 class="wireframe-title">${wireframe.name}</h3>
+                    <p class="wireframe-description">${wireframe.description}</p>
+                    <button class="view-button">View Wireframe</button>
+                </div>
+            `).join('');
+        }
+
+        function openModal(id) {
+            currentWireframeId = id;
+            const wireframe = wireframes.find(w => w.id === id);
+            
+            document.getElementById('modal-title').textContent = wireframe.name;
+            document.getElementById('wireframe-display').textContent = wireframe.ascii;
+            
+            const infoHTML = `
+                <div class="info-section">
+                    <h3>Description</h3>
+                    <p>${wireframe.description}</p>
+                </div>
+                <div class="info-section">
+                    <h3>Key Features</h3>
+                    <p>${wireframe.info.features.join(' • ')}</p>
+                </div>
+                <div class="info-section">
+                    <h3>Navigation</h3>
+                    <p>${wireframe.info.navigation}</p>
+                </div>
+            `;
+            document.getElementById('wireframe-info').innerHTML = infoHTML;
+            
+            // Update navigation buttons
+            document.getElementById('prev-button').disabled = id === 1;
+            document.getElementById('next-button').disabled = id === 13;
+            
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentWireframeId = null;
+        }
+
+        function navigateWireframe(direction) {
+            const newId = currentWireframeId + direction;
+            if (newId >= 1 && newId <= 13) {
+                openModal(newId);
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft' && currentWireframeId && currentWireframeId > 1) {
+                navigateWireframe(-1);
+            }
+            if (e.key === 'ArrowRight' && currentWireframeId && currentWireframeId < 13) {
+                navigateWireframe(1);
+            }
+        });
+
+        // Initialize
+        renderGrid();
+    </script>
+</body>
+</html>
